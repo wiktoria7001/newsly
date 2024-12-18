@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:newsly/model/article_model.dart';
 import 'package:newsly/model/category_model.dart';
 import 'package:newsly/model/slider_mode.dart';
 import 'package:newsly/services/data.dart';
 import 'package:newsly/services/slider_data.dart';
+import 'package:newsly/services/news.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatefulWidget {
@@ -17,13 +20,25 @@ class _HomeState extends State<Home> {
 
 List<CategoryModel> categories = [];
 List<SliderModel> sliders = [];
+List<ArticleModel> articles = []; 
+bool _loading = true;
 int activeIndex = 0;
 
 @override
   void initState() {
     categories = getCategories();
     sliders = getSliders();
+    getNews();
     super.initState();
+  }
+
+  getNews()async{
+    News newsClass = News();
+    await newsClass.getNews();
+    articles = newsClass.news;
+    setState(() {
+      _loading = false;
+    });
   }
 
   @override
@@ -43,7 +58,7 @@ int activeIndex = 0;
         centerTitle: true,
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
+      body: _loading? Center(child: CircularProgressIndicator()): SingleChildScrollView(
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +71,7 @@ int activeIndex = 0;
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length, 
                 itemBuilder: (context,index){
-                  return CategoryTitle(
+                  return CategoryTile(
                     image: categories[index].image, 
                     categoryName: categories[index].categoryName,
                     );
@@ -77,8 +92,10 @@ int activeIndex = 0;
                         ),
                       ),
                        Text(
-                      "View All!",
+                      "View All",
                       style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.blue,
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,
                         fontSize: 16.0,
@@ -120,127 +137,30 @@ int activeIndex = 0;
                         ),
                       ),
                        Text(
-                      "View All!",
+                      "View All",
                       style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.blue,
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,
                         fontSize: 16.0,
                         ),
-                      ),
+                       )
                   ],
                 ),
               ),
               SizedBox(height: 10.0,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Material(
-                  elevation: 3.0,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                      Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            "images/science.jpg", 
-                            height: 150, 
-                            width: 150,
-                            fit: BoxFit.cover,),
-                        )
-                      ), 
-                      SizedBox(width: 8.0,),
-                      Column(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width/2,
-                            child: Text(
-                                "Rui Costa outsprints breakaway to win stage 15",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 17.0,
-                                  ),
-                                ),
-                          ),
-                          SizedBox(
-                            height: 7.0,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width/2,
-                            child: Text(
-                                "Then a final kick to beat lennard kamna",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15.0,
-                                  ),
-                                ),
-                          ),
-                    
-                        ],
-                      ),
-                    ],),
-                  ),
-                ),
-              ), 
-              SizedBox(height: 20.0,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Material(
-                  elevation: 3.0,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                      Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            "images/science.jpg", 
-                            height: 150, 
-                            width: 150,
-                            fit: BoxFit.cover,),
-                        )
-                      ), 
-                      SizedBox(width: 8.0,),
-                      Column(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width/2,
-                            child: Text(
-                                "Rui Costa outsprints breakaway to win stage 15",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 17.0,
-                                  ),
-                                ),
-                          ),
-                          SizedBox(
-                            height: 7.0,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width/2,
-                            child: Text(
-                                "Then a final kick to beat lennard kamna",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15.0,
-                                  ),
-                                ),
-                          ),
-                    
-                        ],
-                      ),
-                    ],),
-                  ),
-                ),
+              Container(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  itemCount: articles.length, 
+                  itemBuilder: (context, index) {
+                  return BlogTile(
+                    imageUrl: articles[index].urlToImage!, 
+                    title: articles[index].title!, 
+                    desc: articles[index].description!);
+                }),
               )
             ],
           ),
@@ -296,9 +216,9 @@ int activeIndex = 0;
       );
 }
 
-class CategoryTitle extends StatelessWidget {
+class CategoryTile extends StatelessWidget {
   final image, categoryName;
-  CategoryTitle({this.categoryName, this.image});
+  CategoryTile({this.categoryName, this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -333,6 +253,79 @@ class CategoryTitle extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class BlogTile  extends StatelessWidget {
+  String imageUrl, title, desc;
+  BlogTile({required this.imageUrl,required this.title, required this.desc});
+
+  @override
+  Widget build(BuildContext context) {
+  return  GestureDetector(
+      onTap: (){},
+      child: Container(
+        margin: EdgeInsets.only(bottom: 10.0 ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Material(
+            elevation: 3.0,
+            borderRadius: BorderRadius.circular(10),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Container(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImage(
+                      height: 120, 
+                      width: 120,
+                      fit: BoxFit.cover, 
+                      imageUrl: imageUrl,
+                      ),
+                  )
+                ), 
+                SizedBox(width: 8.0,),
+                Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width/2,
+                      child: Text(
+                          title,
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17.0,
+                            ),
+                          ),
+                    ),
+                    SizedBox(
+                      height: 7.0,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width/2,
+                      child: Text(
+                          desc,
+                          maxLines: 3,
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15.0,
+                            ),
+                          ),
+                    ),
+              
+                  ],
+                ),
+              ],),
+            ),
+          ),
+        ),
       ),
     );
   }
