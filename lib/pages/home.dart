@@ -5,6 +5,7 @@ import 'package:newsly/model/article_model.dart';
 import 'package:newsly/model/category_model.dart';
 import 'package:newsly/model/slider_mode.dart';
 import 'package:newsly/pages/article_view.dart';
+import 'package:newsly/pages/category_news.dart';
 import 'package:newsly/services/data.dart';
 import 'package:newsly/services/slider_data.dart';
 import 'package:newsly/services/news.dart';
@@ -65,6 +66,7 @@ int activeIndex = 0;
         ),
         centerTitle: true,
         elevation: 0.0,
+        automaticallyImplyLeading: false,
       ),
       body: _loading? Center(child: CircularProgressIndicator()): SingleChildScrollView(
         child: Container(
@@ -234,37 +236,44 @@ class CategoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child:  Image.asset(
-              image,
-              width: 120,
-              height: 70, fit: BoxFit.cover,
-            ),
-          ),
-          Container(
-            width: 120,
-            height: 70,
-            decoration: BoxDecoration(
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(
+          context, 
+          MaterialPageRoute(builder: (context) => CategoryNews(name: categoryName)));
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 16),
+        child: Stack(
+          children: [
+            ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              color: Colors.black38,
-            ),
-            child: Center(
-              child: Text(
-                categoryName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
+              child:  Image.asset(
+                image,
+                width: 120,
+                height: 70, fit: BoxFit.cover,
               ),
             ),
-          )
-        ],
+            Container(
+              width: 120,
+              height: 70,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: Colors.black38,
+              ),
+              child: Center(
+                child: Text(
+                  categoryName,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
