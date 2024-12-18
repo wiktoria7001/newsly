@@ -28,8 +28,8 @@ int activeIndex = 0;
 @override
   void initState() {
     categories = getCategories();
-    sliders = getSliders();
     getNews();
+    getSliders();
     super.initState();
   }
 
@@ -41,6 +41,13 @@ int activeIndex = 0;
       _loading = false;
     });
   }
+
+    getSliders()async{
+      Sliders slider = Sliders();
+      await slider.getSliders();
+      sliders = slider.sliders;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +112,13 @@ int activeIndex = 0;
                   ],
                 ),
               ),
-              SizedBox(height: 30.0,),
-              CarouselSlider.builder(itemCount: sliders.length, itemBuilder: (context, index, realIndex){
-                String? res = sliders[index].image;
-                String? name = sliders[index].name;
-                return buildImage(res!, index, name!);
+              SizedBox(height: 20.0,),
+              CarouselSlider.builder(
+                itemCount: 5, 
+                itemBuilder: (context, index, realIndex){
+                String? res = sliders[index].urlToImage;
+                String? res1 = sliders[index].title;
+                return buildImage(res!, index, res1!);
               }, options: CarouselOptions(
                   height: 250, 
                   autoPlay: true,
@@ -176,8 +185,8 @@ int activeIndex = 0;
         children: [
          ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Image.asset(
-            image, 
+          child: CachedNetworkImage(
+            imageUrl: image, 
             height: 250,
             fit: BoxFit.cover, 
             width: MediaQuery.of(context).size.width,
@@ -197,6 +206,7 @@ int activeIndex = 0;
               ),
             child: Text(
               name,
+              maxLines: 2,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20.0,
@@ -209,7 +219,7 @@ int activeIndex = 0;
     ) ;
     Widget buildIndicator() => AnimatedSmoothIndicator(
       activeIndex: activeIndex, 
-      count: sliders.length,
+      count: 5,
       effect: SlideEffect(
         dotWidth: 15,
         dotHeight: 15,

@@ -1,33 +1,29 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:newsly/model/slider_mode.dart';
 
-List<SliderModel> getSliders(){
-  List <SliderModel> slider = [];
-  SliderModel sliderModel = new SliderModel();
+class Sliders {
+  List<SliderModel> sliders = [];
 
-  sliderModel.name = "Bow To The Authority of Silenforce";
-  sliderModel.image = "images/business.jpg";
-  slider.add(sliderModel);
-  sliderModel = new SliderModel();
+  Future<void> getSliders()async {
+    String urlNews = "https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=fe7d5cfe3eca4b2fbc9882d416f3aeb9";
+    var response = await http.get(Uri.parse(urlNews));
+    var jsonData = jsonDecode(response.body);
 
-  sliderModel.name = "Bow To The Authority of Silenforce";
-  sliderModel.image = "images/entertainment.jpg";
-  slider.add(sliderModel);
-  sliderModel = new SliderModel();
-
-  sliderModel.name = "Bow To The Authority of Silenforce";
-  sliderModel.image = "images/general.jpg";
-  slider.add(sliderModel);
-  sliderModel = new SliderModel();
-
-  sliderModel.name = "Bow To The Authority of Silenforce";
-  sliderModel.image = "images/health.jpg";
-  slider.add(sliderModel);
-  sliderModel = new SliderModel();
-
-  sliderModel.name = "Bow To The Authority of Silenforce";
-  sliderModel.image = "images/sports.jpg";
-  slider.add(sliderModel);
-  sliderModel = new SliderModel();
-
-  return slider;
+    if(jsonData['status'] == 'ok') {
+      jsonData["articles"].forEach((element){
+        if(element["urlToImage"] != null && element['description'] != null){
+          SliderModel sliderModel = SliderModel(
+            title: element["title"],
+            description: element["description"],
+            url: element["url"],
+            urlToImage: element["urlToImage"],
+            content: element["content"],
+            author: element["author"],
+          );
+          sliders.add(sliderModel);
+        }
+      });
+    }
+  }
 }
