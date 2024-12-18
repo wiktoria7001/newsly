@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:newsly/model/article_model.dart';
 import 'package:newsly/model/category_model.dart';
 import 'package:newsly/model/slider_mode.dart';
+import 'package:newsly/pages/article_view.dart';
 import 'package:newsly/services/data.dart';
 import 'package:newsly/services/slider_data.dart';
 import 'package:newsly/services/news.dart';
@@ -159,7 +160,8 @@ int activeIndex = 0;
                   return BlogTile(
                     imageUrl: articles[index].urlToImage!, 
                     title: articles[index].title!, 
-                    desc: articles[index].description!);
+                    desc: articles[index].description!,
+                    url: articles[index].url!);
                 }),
               )
             ],
@@ -259,13 +261,15 @@ class CategoryTile extends StatelessWidget {
 }
 
 class BlogTile  extends StatelessWidget {
-  String imageUrl, title, desc;
-  BlogTile({required this.imageUrl,required this.title, required this.desc});
+  String imageUrl, title, desc, url;
+  BlogTile({required this.imageUrl,required this.title, required this.desc, required this.url});
 
   @override
   Widget build(BuildContext context) {
   return  GestureDetector(
-      onTap: (){},
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleView(blogUrl: url)));
+      },
       child: Container(
         margin: EdgeInsets.only(bottom: 10.0 ),
         child: Padding(
