@@ -4,6 +4,7 @@ import 'package:newsly/model/category_model.dart';
 import 'package:newsly/model/slider_mode.dart';
 import 'package:newsly/services/data.dart';
 import 'package:newsly/services/slider_data.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -43,7 +44,9 @@ int activeIndex = 0;
         elevation: 0.0,
       ),
       body: Container(
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Container(
             margin: EdgeInsets.only(left: 10.0),
             height: 70,
@@ -57,6 +60,31 @@ int activeIndex = 0;
                   categoryName: categories[index].categoryName,
                   );
               }),
+            ),
+            SizedBox(height: 30.0,),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Breaking News!",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                      ),
+                    ),
+                     Text(
+                    "View All!",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.0,
+                      ),
+                    ),
+                ],
+              ),
             ),
             SizedBox(height: 30.0,),
             CarouselSlider.builder(itemCount: sliders.length, itemBuilder: (context, index, realIndex){
@@ -74,6 +102,33 @@ int activeIndex = 0;
                   });
                 })
                 ) ,
+                SizedBox(height: 30.0),
+                Center(child: buildIndicator()),
+                SizedBox(height: 30.0,),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Trending News!",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                      ),
+                    ),
+                     Text(
+                    "View All!",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.0,
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -116,6 +171,15 @@ int activeIndex = 0;
         ]
       ),
     ) ;
+    Widget buildIndicator() => AnimatedSmoothIndicator(
+      activeIndex: activeIndex, 
+      count: sliders.length,
+      effect: SlideEffect(
+        dotWidth: 15,
+        dotHeight: 15,
+        activeDotColor: Colors.blue,
+      ),
+      );
 }
 
 class CategoryTitle extends StatelessWidget {
