@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:newsly/model/article_model.dart';
 import 'package:newsly/model/category_model.dart';
 import 'package:newsly/model/slider_mode.dart';
+import 'package:newsly/pages/all_news.dart';
 import 'package:newsly/pages/article_view.dart';
 import 'package:newsly/pages/category_news.dart';
 import 'package:newsly/services/data.dart';
@@ -101,16 +102,23 @@ int activeIndex = 0;
                         fontSize: 18.0,
                         ),
                       ),
-                       Text(
-                      "View All",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        decorationColor: Colors.blue,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16.0,
-                        ),
-                      ),
+                       GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(builder: (context) => AllNews(news: "Breaking")));
+                        },
+                         child: Text(
+                          "View All",
+                          style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16.0,
+                          ),
+                                               ),
+                       ),
                   ],
                 ),
               ),
@@ -148,15 +156,22 @@ int activeIndex = 0;
                         fontSize: 18.0,
                         ),
                       ),
-                       Text(
-                      "View All",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        decorationColor: Colors.blue,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16.0,
-                        ),
+                        GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(builder: (context) => AllNews(news: "Trending")));
+                        },
+                         child: Text(
+                          "View All",
+                          style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16.0,
+                          ),
+                         ),
                        )
                   ],
                 ),
